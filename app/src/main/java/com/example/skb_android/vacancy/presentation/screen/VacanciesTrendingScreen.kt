@@ -1,4 +1,4 @@
-package com.example.skb_android.vacancy.screen
+package com.example.skb_android.vacancy.presentation.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,8 +14,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.skb_android.ui.kit.VacancyCardComponent
 import com.example.skb_android.ui.theme.Spacing
 import org.koin.androidx.compose.koinViewModel
-import com.example.skb_android.vacancy.model.listShortVacanciesInfo
-import com.example.skb_android.vacancy.viewModel.VacanciesTrendingViewModel
+import com.example.skb_android.vacancy.presentation.model.listShortVacanciesInfo
+import com.example.skb_android.vacancy.presentation.viewModel.VacanciesTrendingViewModel
 
 @Composable
 fun VacanciesTrendingScreen(onVacancyClick: (vacancyId: String) -> Unit) {

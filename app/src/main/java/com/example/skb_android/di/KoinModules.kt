@@ -1,12 +1,12 @@
-package com.example.skb_android.koin
+package com.example.skb_android.di
 
 import com.example.skb_android.navigation.MyBackStack
 import com.example.skb_android.navigation.NavHotRoute
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
-import com.example.skb_android.vacancy.repository.VacanciesFavoritesRepository
-import com.example.skb_android.vacancy.viewModel.VacanciesTrendingViewModel
-import com.example.skb_android.vacancy.viewModel.VacancyFullScreenViewModel
+import com.example.skb_android.vacancy.data.repository.VacanciesFavoritesRepository
+import com.example.skb_android.vacancy.presentation.viewModel.VacanciesTrendingViewModel
+import com.example.skb_android.vacancy.presentation.viewModel.VacancyFullScreenViewModel
 
 val koinModule = module {
     single { MyBackStack(NavHotRoute) }

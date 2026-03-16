@@ -1,4 +1,4 @@
-package com.example.skb_android.vacancy.model
+package com.example.skb_android.vacancy.presentation.model
 
 import java.time.OffsetDateTime
 

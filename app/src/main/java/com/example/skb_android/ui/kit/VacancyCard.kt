@@ -20,8 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.skb_android.ui.theme.Spacing
 import com.example.skb_android.util.toReadableDate
-import com.example.skb_android.vacancy.model.ShortVacancyModel
-import com.example.skb_android.vacancy.model.listShortVacanciesInfo
+import com.example.skb_android.vacancy.presentation.model.ShortVacancyModel
+import com.example.skb_android.vacancy.presentation.model.listShortVacanciesInfo
 
 @Composable
 fun VacancyCardComponent(
