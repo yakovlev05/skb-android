@@ -1,8 +1,8 @@
-package vacancy.viewModel
+package com.example.skb_android.vacancy.viewModel
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.StateFlow
-import vacancy.repository.VacanciesFavoritesRepository
+import com.example.skb_android.vacancy.repository.VacanciesFavoritesRepository
 
 class VacanciesTrendingViewModel(
     private val vacanciesFavoritesRepository: VacanciesFavoritesRepository

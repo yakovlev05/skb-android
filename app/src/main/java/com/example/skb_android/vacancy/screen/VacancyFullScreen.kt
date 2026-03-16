@@ -1,4 +1,4 @@
-package vacancy.screen
+package com.example.skb_android.vacancy.screen
 
 
 import android.text.Html
@@ -31,9 +31,9 @@ import com.example.skb_android.ui.theme.Spacing
 import com.example.skb_android.util.toReadableDate
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import vacancy.model.FullVacancyModel
-import vacancy.model.listFullVacanciesInfo
-import vacancy.viewModel.VacancyFullScreenViewModel
+import com.example.skb_android.vacancy.model.FullVacancyModel
+import com.example.skb_android.vacancy.model.listFullVacanciesInfo
+import com.example.skb_android.vacancy.viewModel.VacancyFullScreenViewModel
 
 @Composable
 fun VacancyFullScreen(vacancyId: String) {

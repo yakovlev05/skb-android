@@ -1,11 +1,11 @@
-package vacancy.viewModel
+package com.example.skb_android.vacancy.viewModel
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import vacancy.model.FullVacancyModel
-import vacancy.model.listFullVacanciesInfo
+import com.example.skb_android.vacancy.model.FullVacancyModel
+import com.example.skb_android.vacancy.model.listFullVacanciesInfo
 import java.util.concurrent.CompletableFuture
 
 data class VacancyFullScreenState(

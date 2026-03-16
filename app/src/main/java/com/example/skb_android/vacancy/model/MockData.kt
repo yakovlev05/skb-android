@@ -1,4 +1,4 @@
-package vacancy.model
+package com.example.skb_android.vacancy.model
 
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter

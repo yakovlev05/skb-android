@@ -1,4 +1,4 @@
-package vacancy.repository
+package com.example.skb_android.vacancy.repository
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

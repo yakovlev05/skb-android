@@ -21,8 +21,8 @@ import com.example.skb_android.navigation.NavHotRoute
 import com.example.skb_android.navigation.NavSearchRoute
 import com.example.skb_android.navigation.VacancyFullRoute
 import org.koin.compose.koinInject
-import vacancy.screen.VacanciesTrendingScreen
-import vacancy.screen.VacancyFullScreen
+import com.example.skb_android.vacancy.screen.VacanciesTrendingScreen
+import com.example.skb_android.vacancy.screen.VacancyFullScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
