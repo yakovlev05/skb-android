@@ -2,6 +2,8 @@ package com.example.skb_android
 
 import android.app.Application
 import com.example.skb_android.di.koinModule
+import com.example.skb_android.di.networkModule
+import com.example.skb_android.vacancy.di.vacanciesModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -12,7 +14,7 @@ class App : Application() {
         startKoin {
             androidContext(this@App)
             androidLogger()
-            modules(koinModule)
+            modules(koinModule, networkModule, vacanciesModule)
         }
     }
 }

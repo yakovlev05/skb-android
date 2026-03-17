@@ -1,8 +1,8 @@
-package com.example.skb_android.vacancy.presentation.model
+package com.example.skb_android.vacancy.domain.model
 
 import java.time.OffsetDateTime
 
-data class ShortVacancyModel(
+data class VacancyEntity(
     val id: String,
     val vacancyUrl: String,
     val name: String,
@@ -13,5 +13,9 @@ data class ShortVacancyModel(
     val employerName: String,
     val employerUrl: String?,
     val employerLogoUrl: String?,
-    val areaName: String
+    val areaName: String,
+    val experienceName: String?,
+    val description: String,
+    val skills: List<String>,
+    val isFavorite: Boolean
 )

@@ -1,5 +1,10 @@
 package com.example.skb_android
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -46,6 +51,14 @@ fun MainScreen() {
                     }
                 )
 
+                is NavHotRoute -> TopAppBar(
+                    title = { Text("Горячее") }
+                )
+
+                is NavSearchRoute -> TopAppBar(
+                    title = { Text("Поиск") }
+                )
+
                 else -> {}
             }
         },
@@ -68,9 +81,7 @@ fun MainScreen() {
             modifier = Modifier.padding(innerPadding),
             entryProvider = entryProvider {
                 entry<NavHotRoute> {
-                    VacanciesTrendingScreen {
-                        myBackStack.add(VacancyFullRoute(it))
-                    }
+                    VacanciesTrendingScreen()
                 }
                 entry<NavSearchRoute> {
                     Text("Search routes")
