@@ -1,38 +1,67 @@
 package com.example.skb_android.vacancy.presentation.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.skb_android.vacancy.domain.interactor.VacancyInteractor
+import com.example.skb_android.vacancy.domain.model.VacancyEntity
+import com.example.skb_android.vacancy.presentation.model.VacancyFullState
+import com.example.skb_android.vacancy.presentation.model.VacancyFullUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import com.example.skb_android.vacancy.presentation.model.FullVacancyModel
-import com.example.skb_android.vacancy.presentation.model.listFullVacanciesInfo
-import java.util.concurrent.CompletableFuture
-
-data class VacancyFullScreenState(
-    val isLoading: Boolean,
-    val fullVacancy: FullVacancyModel?
-)
+import kotlinx.coroutines.launch
 
 class VacancyFullScreenViewModel(
+    private val vacancyInteractor: VacancyInteractor,
     private val vacancyId: String
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(VacancyFullScreenState(true, null))
-    val state: StateFlow<VacancyFullScreenState> = _state
+    private val _mutableState = MutableStateFlow(VacancyFullState())
+
+    val viewState = _mutableState.asStateFlow()
 
     init {
-        load()
+        loadVacancy()
     }
 
-    private fun load() {
-        CompletableFuture.supplyAsync {
-            Thread.sleep(1000)
-            _state.update {
-                VacancyFullScreenState(
-                    false,
-                    listFullVacanciesInfo.find { it.id == vacancyId }
-                )
-            }
+    private fun loadVacancy() {
+        viewModelScope.launch {
+            updateState(VacancyFullState.State.Loading)
+            runCatching { vacancyInteractor.getVacancy(vacancyId) }
+                .onSuccess { vacancy ->
+                    updateState(VacancyFullState.State.Success(mapToUi(vacancy)))
+                }
+                .onFailure {
+                    Log.e(TAG, "Failed to load vacancy: ${it.message}")
+                    updateState(VacancyFullState.State.Error(it.message.orEmpty()))
+                }
         }
+    }
+
+    private fun updateState(state: VacancyFullState.State) {
+        _mutableState.update { it.copy(state = state) }
+    }
+
+    private fun mapToUi(vacancy: VacancyEntity): VacancyFullUiModel = VacancyFullUiModel(
+        id = vacancy.id,
+        vacancyUrl = vacancy.vacancyUrl,
+        name = vacancy.name,
+        prettySalary = toPrettySalary(vacancy.salaryFrom, vacancy.salaryTo, vacancy.salaryModeName),
+        publishedAt = vacancy.publishedAt,
+        employerName = vacancy.employerName,
+        employerUrl = vacancy.employerUrl,
+        employerLogoUrl = vacancy.employerLogoUrl,
+        areaName = vacancy.areaName,
+        experienceName = vacancy.experienceName,
+        description = vacancy.description,
+        skills = vacancy.skills,
+        isFavorite = vacancy.isFavorite
+    )
+
+    companion
+
+    object {
+        private val TAG = VacancyFullScreenViewModel::class.simpleName
     }
 }

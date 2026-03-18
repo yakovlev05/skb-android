@@ -20,12 +20,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.skb_android.ui.theme.Spacing
 import com.example.skb_android.util.toReadableDate
-import com.example.skb_android.vacancy.presentation.model.ShortVacancyModel
+import com.example.skb_android.vacancy.presentation.model.ShortVacancyUiModel
 import com.example.skb_android.vacancy.presentation.model.listShortVacanciesInfo
 
 @Composable
 fun VacancyCardComponent(
-    shortVacancy: ShortVacancyModel,
+    shortVacancy: ShortVacancyUiModel,
     onVacancyClick: () -> Unit,
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
@@ -61,7 +61,7 @@ fun VacancyCardComponent(
                         ),
                         color = MaterialTheme.colorScheme.primary
                     )
-                    SalaryInfo(shortVacancy)
+                    SalaryInfo(shortVacancy.prettySalary)
                 }
                 IconButton(
                     onClick = onFavoriteClick
@@ -120,13 +120,10 @@ fun VacancyCardComponent(
 }
 
 @Composable
-private fun SalaryInfo(shortVacancy: ShortVacancyModel) {
-    val isVisible = shortVacancy.salaryFrom != null
-            && shortVacancy.salaryTo != null
-            && shortVacancy.salaryModeName != null
-    if (isVisible) {
+private fun SalaryInfo(salary: String?) {
+    if (salary != null) {
         Text(
-            text = "${shortVacancy.salaryFrom} - ${shortVacancy.salaryTo} ${shortVacancy.salaryModeName.lowercase()}",
+            text = salary,
             style = MaterialTheme.typography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold
             )

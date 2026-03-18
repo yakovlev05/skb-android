@@ -23,33 +23,44 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.skb_android.ui.kit.EmployerLogo
+import com.example.skb_android.ui.kit.ErrorScreen
 import com.example.skb_android.ui.kit.MiniTextCard
 import com.example.skb_android.ui.kit.MyCircularLoader
 import com.example.skb_android.ui.kit.OpenOnHhButton
 import com.example.skb_android.ui.theme.Spacing
 import com.example.skb_android.util.toReadableDate
-import org.koin.compose.viewmodel.koinViewModel
+import com.example.skb_android.vacancy.presentation.model.VacanciesTrendingState
+import com.example.skb_android.vacancy.presentation.model.VacancyFullState
+import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
-import com.example.skb_android.vacancy.presentation.model.FullVacancyModel
+import com.example.skb_android.vacancy.presentation.model.VacancyFullUiModel
 import com.example.skb_android.vacancy.presentation.model.listFullVacanciesInfo
 import com.example.skb_android.vacancy.presentation.viewModel.VacancyFullScreenViewModel
 
 @Composable
 fun VacancyFullScreen(vacancyId: String) {
-    val vm: VacancyFullScreenViewModel = koinViewModel { parametersOf(vacancyId) }
-    val state by vm.state.collectAsState()
+    val vm = koinViewModel<VacancyFullScreenViewModel>(key = vacancyId) { parametersOf(vacancyId) }
+    val state by vm.viewState.collectAsStateWithLifecycle()
 
-    if (!LocalInspectionMode.current && state.isLoading || state.fullVacancy == null) {
-        MyCircularLoader()
-    } else {
-        VacancyInfo(state.fullVacancy!!)
+    VacancyFullScreenContent(state.state)
+}
+
+@Composable
+private fun VacancyFullScreenContent(state: VacancyFullState.State) {
+    when (state) {
+        is VacancyFullState.State.Loading -> MyCircularLoader()
+
+        is VacancyFullState.State.Error -> ErrorScreen(state.message)
+
+        is VacancyFullState.State.Success -> VacancyInfo(state.vacancy)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun VacancyInfo(fullVacancy: FullVacancyModel) {
+private fun VacancyInfo(fullVacancy: VacancyFullUiModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,7 +75,7 @@ private fun VacancyInfo(fullVacancy: FullVacancyModel) {
             ),
             color = MaterialTheme.colorScheme.primary
         )
-        SalaryInfo(fullVacancy)
+        SalaryInfo(fullVacancy.prettySalary)
         AdditionalInfo(fullVacancy)
         Text(
             modifier = Modifier.padding(top = Spacing.small),
@@ -85,13 +96,10 @@ private fun VacancyInfo(fullVacancy: FullVacancyModel) {
 }
 
 @Composable
-private fun SalaryInfo(fullVacancy: FullVacancyModel) {
-    val isExists = fullVacancy.salaryFrom != null
-            && fullVacancy.salaryTo != null
-            && fullVacancy.salaryModeName != null
-    if (isExists) {
+private fun SalaryInfo(salary: String?) {
+    if (salary != null) {
         Text(
-            text = "${fullVacancy.salaryFrom} - ${fullVacancy.salaryTo} ${fullVacancy.salaryModeName.lowercase()}",
+            text = salary,
             style = MaterialTheme.typography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold
             ),
@@ -106,7 +114,7 @@ private fun SalaryInfo(fullVacancy: FullVacancyModel) {
 }
 
 @Composable
-private fun AdditionalInfo(fullVacancy: FullVacancyModel) {
+private fun AdditionalInfo(fullVacancy: VacancyFullUiModel) {
     val text = listOf(fullVacancy.areaName, fullVacancy.experienceName)
         .filter { it != null }
         .joinToString(" - ")
@@ -119,7 +127,7 @@ private fun AdditionalInfo(fullVacancy: FullVacancyModel) {
 }
 
 @Composable
-private fun EmployerCard(fullVacancy: FullVacancyModel) {
+private fun EmployerCard(fullVacancy: VacancyFullUiModel) {
     Card(
         modifier = Modifier.padding(top = Spacing.medium)
     ) {
@@ -153,7 +161,7 @@ private fun EmployerCard(fullVacancy: FullVacancyModel) {
 }
 
 @Composable
-private fun VacancyDescription(fullVacancy: FullVacancyModel) {
+private fun VacancyDescription(fullVacancy: VacancyFullUiModel) {
     val spanned = Html.fromHtml(fullVacancy.description, Html.FROM_HTML_MODE_LEGACY)
     Card(
         modifier = Modifier.padding(top = Spacing.medium)
@@ -194,5 +202,5 @@ private fun Skills(skills: List<String>) {
 @Preview(showBackground = true)
 @Composable
 private fun VacancyFullPreview() {
-    VacancyInfo(listFullVacanciesInfo.last())
+    VacancyFullScreenContent(VacancyFullState.State.Success(listFullVacanciesInfo.last()))
 }

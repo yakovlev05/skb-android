@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -60,4 +61,9 @@ dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.converter.kotlinx.serialization)
+    implementation(libs.retrofit)
+    implementation(libs.kotlinx.serialization.json)
+    debugImplementation(libs.chucker)
+    releaseImplementation(libs.chucker.no.op)
 }
