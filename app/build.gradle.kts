@@ -66,4 +66,5 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     debugImplementation(libs.chucker)
     releaseImplementation(libs.chucker.no.op)
+    implementation(libs.androidx.datastore.preferences)
 }

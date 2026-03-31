@@ -2,6 +2,7 @@ package com.example.skb_android.vacancy.di
 
 import org.koin.core.module.dsl.viewModel
 import com.example.skb_android.vacancy.data.api.VacanciesApi
+import com.example.skb_android.vacancy.data.mapper.VacanciesFilterMapper
 import com.example.skb_android.vacancy.data.mapper.VacanciesMapper
 import com.example.skb_android.vacancy.data.repository.VacanciesFavoritesRepository
 import com.example.skb_android.vacancy.data.repository.VacanciesRepository
@@ -15,9 +16,10 @@ val vacanciesModule = module {
     single { get<Retrofit>().create(VacanciesApi::class.java) }
 
     single { VacanciesMapper() }
-    single { VacanciesRepository(get(), get()) }
+    single { VacanciesRepository(get(), get(), get(), get()) }
     single { VacanciesFavoritesRepository() }
     single { VacancyInteractor(get(), get()) }
+    single { VacanciesFilterMapper() }
 
     viewModel { VacanciesTrendingViewModel(get(), get()) }
     viewModel { VacancyFullScreenViewModel(get(), get()) }
