@@ -9,6 +9,7 @@ import com.example.skb_android.util.launchCatching
 import com.example.skb_android.vacancy.domain.interactor.VacancyInteractor
 import com.example.skb_android.vacancy.domain.model.Experience
 import com.example.skb_android.vacancy.domain.model.VacancyEntity
+import com.example.skb_android.vacancy.presentation.cache.FilterBadgeCache
 import com.example.skb_android.vacancy.presentation.mapper.VacanciesPresentationMapper
 import com.example.skb_android.vacancy.presentation.model.ShortVacancyUiModel
 import com.example.skb_android.vacancy.presentation.model.VacanciesSearchQueryState
@@ -28,7 +29,9 @@ class VacanciesTrendingViewModel(
     private val vacancyInteractor: VacancyInteractor,
     private val myBackStack: MyBackStack,
     private val vacanciesPresentationMapper: VacanciesPresentationMapper,
+    private val filterBadgeCache: FilterBadgeCache,
 ) : ViewModel() {
+    val hasActiveFilters = filterBadgeCache.hasActiveFilters
 
     private val _mutableVacanciesState = MutableStateFlow(VacanciesTrendingState())
     private val _mutableSearchState = MutableStateFlow(VacanciesSearchQueryState())
@@ -82,8 +85,13 @@ class VacanciesTrendingViewModel(
                 vacancyInteractor.observeSearchQuery(),
                 vacancyInteractor.observeExperienceFilter()
             ) { text, experience ->
+                val isDefault = text == "" && experience == null
+                filterBadgeCache.update(isDefault)
                 _mutableSearchState.update {
-                    it.copy(text = text, experience = mapToUi(experience))
+                    it.copy(
+                        text = text,
+                        experience = mapToUi(experience),
+                    )
                 }
             }
                 .collect { loadVacancies() }

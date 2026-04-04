@@ -2,7 +2,7 @@ package com.example.skb_android.vacancy.presentation.model
 
 data class VacanciesSearchQueryState(
     val text: String = "",
-    val experience: VacancyExperience? = null
+    val experience: VacancyExperience? = null,
 )
 
 enum class VacancyExperience(val title: String) {

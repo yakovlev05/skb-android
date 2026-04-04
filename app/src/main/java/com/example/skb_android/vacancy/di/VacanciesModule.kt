@@ -7,6 +7,7 @@ import com.example.skb_android.vacancy.data.mapper.VacanciesMapper
 import com.example.skb_android.vacancy.data.repository.VacanciesFavoritesRepository
 import com.example.skb_android.vacancy.data.repository.VacanciesRepository
 import com.example.skb_android.vacancy.domain.interactor.VacancyInteractor
+import com.example.skb_android.vacancy.presentation.cache.FilterBadgeCache
 import com.example.skb_android.vacancy.presentation.mapper.VacanciesPresentationMapper
 import com.example.skb_android.vacancy.presentation.viewModel.VacanciesFavoriteViewModel
 import com.example.skb_android.vacancy.presentation.viewModel.VacanciesTrendingViewModel
@@ -20,11 +21,12 @@ val vacanciesModule = module {
     single { VacanciesMapper() }
     single { VacanciesFilterMapper() }
     single { VacanciesPresentationMapper() }
+    single { FilterBadgeCache() }
     single { VacanciesRepository(get(), get(), get(), get()) }
     single { VacanciesFavoritesRepository(get(), get()) }
     single { VacancyInteractor(get(), get()) }
 
-    viewModel { VacanciesTrendingViewModel(get(), get(), get()) }
+    viewModel { VacanciesTrendingViewModel(get(), get(), get(), get()) }
     viewModel { VacancyFullScreenViewModel(get(), get(), get()) }
     viewModel { VacanciesFavoriteViewModel(get(), get()) }
 }

@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -25,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.skb_android.ui.kit.ErrorScreen
@@ -44,10 +48,12 @@ fun VacanciesTrendingScreen() {
     val vm = koinViewModel<VacanciesTrendingViewModel>()
     val vacanciesState by vm.vacanciesState.collectAsStateWithLifecycle()
     val searchState by vm.searchState.collectAsStateWithLifecycle()
+    val hasActiveFilters by vm.hasActiveFilters.collectAsStateWithLifecycle()
 
     VacanciesTrendingContent(
         vacanciesState = vacanciesState.state,
-        searchState,
+        searchState = searchState,
+        hasActiveFilters = hasActiveFilters,
         onVacancyClick = vm::onVacancyClick,
         onFavoriteClick = vm::onFavoriteClick,
         onSearchClick = vm::onSearchClick,
@@ -61,6 +67,7 @@ fun VacanciesTrendingScreen() {
 private fun VacanciesTrendingContent(
     vacanciesState: VacanciesTrendingState.State,
     searchState: VacanciesSearchQueryState,
+    hasActiveFilters: Boolean,
     onVacancyClick: (vacancy: ShortVacancyUiModel) -> Unit,
     onFavoriteClick: (vacancy: ShortVacancyUiModel) -> Unit,
     onSearchClick: () -> Unit,
@@ -75,7 +82,25 @@ private fun VacanciesTrendingContent(
 
     Column {
         TopAppBar(
-            title = { Text("Горячее") }
+            title = { Text("Горячее") },
+            actions = {
+                IconButton(
+                    onClick = {}
+                ) {
+                    BadgedBox(
+                        badge = {
+                            if (hasActiveFilters) {
+                                Badge()
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Menu"
+                        )
+                    }
+                }
+            }
         )
 
         when (vacanciesState) {
@@ -224,6 +249,7 @@ private fun PreviewSuccess() {
     VacanciesTrendingContent(
         vacanciesState = VacanciesTrendingState.State.Success(listShortVacanciesInfo),
         searchState = VacanciesSearchQueryState("Kotlin", VacancyExperience.NO_EXPERIENCE),
+        hasActiveFilters = true,
         onVacancyClick = {},
         onFavoriteClick = {},
         onSearchQueryInput = {},
