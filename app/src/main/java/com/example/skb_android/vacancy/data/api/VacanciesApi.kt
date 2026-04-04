@@ -12,7 +12,9 @@ interface VacanciesApi {
     suspend fun getVacancies(
         @Query("sort_by") sortBy: String = "relevance",
         @Query("page") page: Int = 0,
-        @Query("per_page") perPage: Int = 10
+        @Query("per_page") perPage: Int = 10,
+        @Query("text") text: String? = null,
+        @Query("experience") experience: String? = null
     ): VacanciesResponse
 
     @GET("/vacancies/{vacancyId}")

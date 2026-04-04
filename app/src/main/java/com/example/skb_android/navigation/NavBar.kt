@@ -19,6 +19,11 @@ object NavBarItems {
             title = "Поиск",
             resourceId = R.drawable.material_icon_search,
             route = NavSearchRoute
+        ),
+        NavBarItem(
+            title = "Избранное",
+            resourceId = R.drawable.material_icon_favorite,
+            route = NavFavoriteRoute
         )
     )
 }
