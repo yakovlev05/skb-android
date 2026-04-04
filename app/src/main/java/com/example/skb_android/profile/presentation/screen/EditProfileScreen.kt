@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -43,7 +44,6 @@ import com.example.skb_android.profile.presentation.model.EditProfileState
 import com.example.skb_android.profile.presentation.viewModel.EditProfileViewModel
 import com.example.skb_android.ui.kit.ProfileAvatar
 import com.example.skb_android.ui.theme.Spacing
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.io.File
@@ -80,6 +80,7 @@ private fun EditProfileScreenContent(
     val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text("Редактирование") },
