@@ -25,6 +25,6 @@ val vacanciesModule = module {
     single { VacancyInteractor(get(), get()) }
 
     viewModel { VacanciesTrendingViewModel(get(), get(), get()) }
-    viewModel { VacancyFullScreenViewModel(get(), get()) }
+    viewModel { VacancyFullScreenViewModel(get(), get(), get()) }
     viewModel { VacanciesFavoriteViewModel(get(), get()) }
 }

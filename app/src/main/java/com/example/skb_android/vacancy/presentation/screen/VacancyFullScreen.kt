@@ -14,16 +14,22 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.skb_android.R
 import com.example.skb_android.ui.kit.EmployerLogo
 import com.example.skb_android.ui.kit.ErrorScreen
 import com.example.skb_android.ui.kit.MiniTextCard
@@ -44,23 +50,35 @@ fun VacancyFullScreen(vacancyId: String) {
     val vm = koinViewModel<VacancyFullScreenViewModel>(key = vacancyId) { parametersOf(vacancyId) }
     val state by vm.viewState.collectAsStateWithLifecycle()
 
-    VacancyFullScreenContent(state.state)
+    VacancyFullScreenContent(
+        state = state.state,
+        onClickBack = vm::onClickBack
+    )
 }
 
 @Composable
-private fun VacancyFullScreenContent(state: VacancyFullState.State) {
+private fun VacancyFullScreenContent(
+    state: VacancyFullState.State,
+    onClickBack: () -> Unit
+) {
     when (state) {
         is VacancyFullState.State.Loading -> MyCircularLoader()
 
         is VacancyFullState.State.Error -> ErrorScreen(state.message)
 
-        is VacancyFullState.State.Success -> VacancyInfo(state.vacancy)
+        is VacancyFullState.State.Success -> VacancyInfo(
+            fullVacancy = state.vacancy,
+            onClickBack = onClickBack
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun VacancyInfo(fullVacancy: VacancyFullUiModel) {
+private fun VacancyInfo(
+    fullVacancy: VacancyFullUiModel,
+    onClickBack: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -68,6 +86,19 @@ private fun VacancyInfo(fullVacancy: VacancyFullUiModel) {
             .padding(horizontal = Spacing.medium)
             .verticalScroll(rememberScrollState())
     ) {
+        TopAppBar(
+            title = {},
+            navigationIcon = {
+                IconButton(
+                    onClick = onClickBack
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.material_icon_arrow_back_ios),
+                        contentDescription = "Назад"
+                    )
+                }
+            }
+        )
         Text(
             text = fullVacancy.name,
             style = MaterialTheme.typography.titleLarge.copy(
@@ -202,5 +233,8 @@ private fun Skills(skills: List<String>) {
 @Preview(showBackground = true)
 @Composable
 private fun VacancyFullPreview() {
-    VacancyFullScreenContent(VacancyFullState.State.Success(listFullVacanciesInfo.last()))
+    VacancyFullScreenContent(
+        state = VacancyFullState.State.Success(listFullVacanciesInfo.last()),
+        onClickBack = {}
+    )
 }

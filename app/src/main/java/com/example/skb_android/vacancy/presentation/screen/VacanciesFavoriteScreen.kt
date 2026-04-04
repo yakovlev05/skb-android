@@ -2,11 +2,15 @@ package com.example.skb_android.vacancy.presentation.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -34,29 +38,36 @@ fun VacanciesFavoriteScreen() {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun VacanciesFavoriteContent(
     vacanciesState: VacanciesFavoriteState.State,
     onVacancyClick: (vacancy: ShortVacancyUiModel) -> Unit,
     onFavoriteClick: (vacancy: ShortVacancyUiModel) -> Unit,
 ) {
-    when (vacanciesState) {
-        is VacanciesFavoriteState.State.Loading -> MyCircularLoader()
-        is VacanciesFavoriteState.State.Error -> ErrorScreen(vacanciesState.message)
-        is VacanciesFavoriteState.State.Success -> LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(Spacing.small),
-            verticalArrangement = Arrangement.spacedBy(Spacing.medium)
-        ) {
-            items(items = vacanciesState.vacancies, key = { it.id }) { vacancy ->
-                VacancyCardComponent(
-                    shortVacancy = vacancy,
-                    onVacancyClick = { onVacancyClick(vacancy) },
-                    isFavorite = true,
-                    onFavoriteClick = { onFavoriteClick(vacancy) }
-                )
+    Column {
+        TopAppBar(
+            title = { Text("Избранное") }
+        )
+
+        when (vacanciesState) {
+            is VacanciesFavoriteState.State.Loading -> MyCircularLoader()
+            is VacanciesFavoriteState.State.Error -> ErrorScreen(vacanciesState.message)
+            is VacanciesFavoriteState.State.Success -> LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(Spacing.small),
+                verticalArrangement = Arrangement.spacedBy(Spacing.medium)
+            ) {
+                items(items = vacanciesState.vacancies, key = { it.id }) { vacancy ->
+                    VacancyCardComponent(
+                        shortVacancy = vacancy,
+                        onVacancyClick = { onVacancyClick(vacancy) },
+                        isFavorite = true,
+                        onFavoriteClick = { onFavoriteClick(vacancy) }
+                    )
+                }
             }
         }
     }

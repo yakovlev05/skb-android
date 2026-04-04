@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,11 +19,13 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.skb_android.ui.kit.ErrorScreen
 import com.example.skb_android.ui.kit.MyCircularLoader
@@ -53,6 +56,7 @@ fun VacanciesTrendingScreen() {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun VacanciesTrendingContent(
     vacanciesState: VacanciesTrendingState.State,
@@ -69,37 +73,43 @@ private fun VacanciesTrendingContent(
         .background(MaterialTheme.colorScheme.background)
         .padding(Spacing.small)
 
-    when (vacanciesState) {
-        is VacanciesTrendingState.State.Loading -> VacanciesTrendingOtherState(
-            modifier = globalModifier,
-            searchState = searchState,
-            onSearchQueryInput = onSearchQueryInput,
-            onSelectExperience = onSelectExperience,
-            onSearchClick = onSearchClick
-        ) {
-            MyCircularLoader()
-        }
-
-        is VacanciesTrendingState.State.Error -> VacanciesTrendingOtherState(
-            modifier = globalModifier,
-            searchState = searchState,
-            onSearchQueryInput = onSearchQueryInput,
-            onSelectExperience = onSelectExperience,
-            onSearchClick = onSearchClick
-        ) {
-            ErrorScreen(vacanciesState.message)
-        }
-
-        is VacanciesTrendingState.State.Success -> VacanciesTrendingSuccessState(
-            modifier = globalModifier,
-            vacancies = vacanciesState.vacancies,
-            searchState = searchState,
-            onVacancyClick = onVacancyClick,
-            onFavoriteClick = onFavoriteClick,
-            onSearchClick = onSearchClick,
-            onSearchQueryInput = onSearchQueryInput,
-            onSelectExperience = onSelectExperience,
+    Column {
+        TopAppBar(
+            title = { Text("Горячее") }
         )
+
+        when (vacanciesState) {
+            is VacanciesTrendingState.State.Loading -> VacanciesTrendingOtherState(
+                modifier = globalModifier,
+                searchState = searchState,
+                onSearchQueryInput = onSearchQueryInput,
+                onSelectExperience = onSelectExperience,
+                onSearchClick = onSearchClick
+            ) {
+                MyCircularLoader()
+            }
+
+            is VacanciesTrendingState.State.Error -> VacanciesTrendingOtherState(
+                modifier = globalModifier,
+                searchState = searchState,
+                onSearchQueryInput = onSearchQueryInput,
+                onSelectExperience = onSelectExperience,
+                onSearchClick = onSearchClick
+            ) {
+                ErrorScreen(vacanciesState.message)
+            }
+
+            is VacanciesTrendingState.State.Success -> VacanciesTrendingSuccessState(
+                modifier = globalModifier,
+                vacancies = vacanciesState.vacancies,
+                searchState = searchState,
+                onVacancyClick = onVacancyClick,
+                onFavoriteClick = onFavoriteClick,
+                onSearchClick = onSearchClick,
+                onSearchQueryInput = onSearchQueryInput,
+                onSelectExperience = onSelectExperience,
+            )
+        }
     }
 }
 

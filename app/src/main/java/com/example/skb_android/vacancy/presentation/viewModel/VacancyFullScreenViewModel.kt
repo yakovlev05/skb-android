@@ -3,6 +3,7 @@ package com.example.skb_android.vacancy.presentation.viewModel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.skb_android.navigation.MyBackStack
 import com.example.skb_android.vacancy.domain.interactor.VacancyInteractor
 import com.example.skb_android.vacancy.domain.model.VacancyEntity
 import com.example.skb_android.vacancy.presentation.model.VacancyFullState
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 
 class VacancyFullScreenViewModel(
     private val vacancyInteractor: VacancyInteractor,
+    private val myBackStack: MyBackStack,
     private val vacancyId: String
 ) : ViewModel() {
 
@@ -23,6 +25,10 @@ class VacancyFullScreenViewModel(
 
     init {
         loadVacancy()
+    }
+
+    fun onClickBack() {
+        myBackStack.removeLast()
     }
 
     private fun loadVacancy() {
@@ -59,9 +65,7 @@ class VacancyFullScreenViewModel(
         isFavorite = vacancy.isFavorite
     )
 
-    companion
-
-    object {
+    companion object {
         private val TAG = VacancyFullScreenViewModel::class.simpleName
     }
 }
