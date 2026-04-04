@@ -22,9 +22,11 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.example.skb_android.navigation.MyBackStack
 import com.example.skb_android.navigation.NavBarItems
+import com.example.skb_android.navigation.NavFavoriteRoute
 import com.example.skb_android.navigation.NavHotRoute
 import com.example.skb_android.navigation.NavSearchRoute
 import com.example.skb_android.navigation.VacancyFullRoute
+import com.example.skb_android.vacancy.presentation.screen.VacanciesFavoriteScreen
 import org.koin.compose.koinInject
 import com.example.skb_android.vacancy.presentation.screen.VacanciesTrendingScreen
 import com.example.skb_android.vacancy.presentation.screen.VacancyFullScreen
@@ -59,6 +61,10 @@ fun MainScreen() {
                     title = { Text("Поиск") }
                 )
 
+                is NavFavoriteRoute -> TopAppBar(
+                    title = { Text("Избранное") }
+                )
+
                 else -> {}
             }
         },
@@ -85,6 +91,9 @@ fun MainScreen() {
                 }
                 entry<NavSearchRoute> {
                     Text("Search routes")
+                }
+                entry<NavFavoriteRoute> {
+                    VacanciesFavoriteScreen()
                 }
                 entry<VacancyFullRoute> {
                     VacancyFullScreen(it.vacancyId)

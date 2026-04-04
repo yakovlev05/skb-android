@@ -9,6 +9,7 @@ import com.example.skb_android.util.launchCatching
 import com.example.skb_android.vacancy.domain.interactor.VacancyInteractor
 import com.example.skb_android.vacancy.domain.model.Experience
 import com.example.skb_android.vacancy.domain.model.VacancyEntity
+import com.example.skb_android.vacancy.presentation.mapper.VacanciesPresentationMapper
 import com.example.skb_android.vacancy.presentation.model.ShortVacancyUiModel
 import com.example.skb_android.vacancy.presentation.model.VacanciesSearchQueryState
 import com.example.skb_android.vacancy.presentation.model.VacanciesTrendingState
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -24,7 +26,8 @@ import kotlinx.coroutines.launch
 
 class VacanciesTrendingViewModel(
     private val vacancyInteractor: VacancyInteractor,
-    private val myBackStack: MyBackStack
+    private val myBackStack: MyBackStack,
+    private val vacanciesPresentationMapper: VacanciesPresentationMapper,
 ) : ViewModel() {
 
     private val _mutableVacanciesState = MutableStateFlow(VacanciesTrendingState())
@@ -35,17 +38,14 @@ class VacanciesTrendingViewModel(
 
     init {
         initFilterFlow()
+        observeFavoriteIds()
     }
 
     fun onFavoriteClick(vacancy: ShortVacancyUiModel) {
-        vacancyInteractor.toggleFavoriteVacancy(vacancy.id)
-
-        _mutableVacanciesState.update { current ->
-            val success = current.state as? VacanciesTrendingState.State.Success ?: return
-            val updatedVacancies = success.vacancies.map {
-                if (it.id == vacancy.id) it.copy(isFavorite = !it.isFavorite) else it
-            }
-            current.copy(state = success.copy(vacancies = updatedVacancies))
+        launchCatching(
+            onError = { Log.e(TAG, "Failed to toggle favorite: ${it.message}") }
+        ) {
+            vacancyInteractor.toggleFavoriteVacancy(vacancy.id)
         }
     }
 
@@ -102,33 +102,36 @@ class VacanciesTrendingViewModel(
                 textSearch = _mutableSearchState.value.text,
                 experience = mapToEntity(_mutableSearchState.value.experience)
             )
-            updateVacanciesState(VacanciesTrendingState.State.Success(mapToUi(vacancies)))
+            updateVacanciesState(
+                VacanciesTrendingState.State.Success(
+                    vacanciesPresentationMapper.mapToShortUi(
+                        vacancies
+                    )
+                )
+            )
+        }
+    }
+
+    private fun observeFavoriteIds() {
+        launchCatching(
+            onError = { Log.e(TAG, "Failed update favorite vacancies ids: ${it.message}") }
+        ) {
+            vacancyInteractor.observeFavoriteIds()
+                .collect { ids ->
+                    _mutableVacanciesState.update { current ->
+                        val success =
+                            current.state as? VacanciesTrendingState.State.Success ?: return@collect
+                        val updatedVacancies =
+                            success.vacancies.map { it.copy(isFavorite = it.id in ids) }
+                        current.copy(state = success.copy(vacancies = updatedVacancies))
+                    }
+                }
         }
     }
 
     private fun updateVacanciesState(state: VacanciesTrendingState.State) {
         _mutableVacanciesState.update { it.copy(state = state) }
     }
-
-    private fun mapToUi(vacancies: List<VacancyEntity>): List<ShortVacancyUiModel> =
-        vacancies.map { vacancy ->
-            ShortVacancyUiModel(
-                id = vacancy.id,
-                vacancyUrl = vacancy.vacancyUrl,
-                name = vacancy.name,
-                prettySalary = toPrettySalary(
-                    vacancy.salaryFrom,
-                    vacancy.salaryTo,
-                    vacancy.salaryModeName
-                ),
-                publishedAt = vacancy.publishedAt,
-                employerName = vacancy.employerName,
-                employerUrl = vacancy.employerUrl,
-                employerLogoUrl = vacancy.employerLogoUrl,
-                areaName = vacancy.areaName,
-                isFavorite = false
-            )
-        }
 
     private fun mapToEntity(experience: VacancyExperience?): Experience? =
         when (experience) {

@@ -1,5 +1,6 @@
 package com.example.skb_android.vacancy.data.mapper
 
+import com.example.skb_android.vacancy.data.entity.VacanciesDbEntity
 import com.example.skb_android.vacancy.data.model.FullVacancyResponse
 import com.example.skb_android.vacancy.data.model.ShortVacancyResponse
 import com.example.skb_android.vacancy.domain.model.VacancyEntity
@@ -44,5 +45,41 @@ class VacanciesMapper {
         description = response.description,
         skills = response.skills.map { it.name },
         isFavorite = false
+    )
+
+    fun mapToEntity(vacanciesDbEntity: VacanciesDbEntity): VacancyEntity = VacancyEntity(
+        id = vacanciesDbEntity.id,
+        vacancyUrl = vacanciesDbEntity.vacancyUrl,
+        name = vacanciesDbEntity.name,
+        salaryFrom = vacanciesDbEntity.salaryFrom,
+        salaryTo = vacanciesDbEntity.salaryTo,
+        salaryModeName = vacanciesDbEntity.salaryModeName,
+        publishedAt = OffsetDateTime.parse(vacanciesDbEntity.publishedAt, dateFormatter),
+        employerName = vacanciesDbEntity.employerName,
+        employerUrl = vacanciesDbEntity.employerUrl,
+        employerLogoUrl = vacanciesDbEntity.employerLogoUrl,
+        areaName = vacanciesDbEntity.areaName,
+        experienceName = vacanciesDbEntity.experienceName,
+        description = vacanciesDbEntity.description,
+        skills = vacanciesDbEntity.skills.split("|"),
+        isFavorite = vacanciesDbEntity.isFavorite,
+    )
+
+    fun mapToDbEntity(vacancyEntity: VacancyEntity): VacanciesDbEntity = VacanciesDbEntity(
+        id = vacancyEntity.id,
+        vacancyUrl = vacancyEntity.vacancyUrl,
+        name = vacancyEntity.name,
+        salaryFrom = vacancyEntity.salaryFrom,
+        salaryTo = vacancyEntity.salaryTo,
+        salaryModeName = vacancyEntity.salaryModeName,
+        publishedAt = vacancyEntity.publishedAt.format(dateFormatter),
+        employerName = vacancyEntity.employerName,
+        employerUrl = vacancyEntity.employerUrl,
+        employerLogoUrl = vacancyEntity.employerLogoUrl,
+        areaName = vacancyEntity.areaName,
+        experienceName = vacancyEntity.experienceName,
+        description = vacancyEntity.description,
+        skills = vacancyEntity.skills.joinToString("|"),
+        isFavorite = vacancyEntity.isFavorite,
     )
 }

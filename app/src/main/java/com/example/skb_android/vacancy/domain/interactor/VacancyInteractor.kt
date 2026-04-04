@@ -4,6 +4,7 @@ import com.example.skb_android.vacancy.data.repository.VacanciesFavoritesReposit
 import com.example.skb_android.vacancy.data.repository.VacanciesRepository
 import com.example.skb_android.vacancy.domain.model.Experience
 import com.example.skb_android.vacancy.domain.model.VacancyEntity
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class VacancyInteractor(
@@ -21,11 +22,12 @@ class VacancyInteractor(
             .copy(isFavorite = vacanciesFavoritesRepository.isExists(vacancyId))
     }
 
-    fun toggleFavoriteVacancy(vacancyId: String) {
+    suspend fun toggleFavoriteVacancy(vacancyId: String) {
         if (vacanciesFavoritesRepository.isExists(vacancyId)) {
             vacanciesFavoritesRepository.removeId(vacancyId)
         } else {
-            vacanciesFavoritesRepository.addId(vacancyId)
+            val fullVacancy = getVacancy(vacancyId)
+            vacanciesFavoritesRepository.save(fullVacancy)
         }
     }
 
@@ -40,4 +42,14 @@ class VacancyInteractor(
     suspend fun setExperienceFilter(experience: Experience?) {
         vacanciesRepository.setExperienceFilter(experience?.name)
     }
+
+    suspend fun getAllFavorites() = vacanciesFavoritesRepository.getAllFavorites()
+
+    fun observeAllFavorites(): Flow<List<VacancyEntity>> =
+        vacanciesFavoritesRepository.observeAllFavorites()
+
+    fun observeFavoriteIds(): Flow<Set<String>> =
+        vacanciesFavoritesRepository.observeFavoriteIds()
+
+    suspend fun deleteFavorite(vacancyId: String) = vacanciesFavoritesRepository.removeId(vacancyId)
 }
