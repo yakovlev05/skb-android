@@ -24,6 +24,11 @@ object NavBarItems {
             title = "Избранное",
             resourceId = R.drawable.material_icon_favorite,
             route = NavFavoriteRoute
+        ),
+        NavBarItem(
+            title = "Профиль",
+            resourceId = R.drawable.material_icon_profile,
+            route = NavProfileRoute
         )
     )
 }

@@ -65,7 +65,7 @@ class VacanciesRepository(
         .distinctUntilChanged()
 
     companion object {
-        private const val SEARCH_QUERY_KEY = "SEARCH_QUERY"
-        private const val SEARCH_EXPERIENCE_FILTER_KEY = "SEARCH_EXPERIENCE_FILTER"
+        private const val SEARCH_QUERY_KEY = "FILTER_SEARCH_QUERY"
+        private const val SEARCH_EXPERIENCE_FILTER_KEY = "FILTER_SEARCH_EXPERIENCE"
     }
 }

@@ -79,13 +79,7 @@ private fun VacancyInfo(
     fullVacancy: VacancyFullUiModel,
     onClickBack: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = Spacing.medium)
-            .verticalScroll(rememberScrollState())
-    ) {
+    Column {
         TopAppBar(
             title = {},
             navigationIcon = {
@@ -99,30 +93,38 @@ private fun VacancyInfo(
                 }
             }
         )
-        Text(
-            text = fullVacancy.name,
-            style = MaterialTheme.typography.titleLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            color = MaterialTheme.colorScheme.primary
-        )
-        SalaryInfo(fullVacancy.prettySalary)
-        AdditionalInfo(fullVacancy)
-        Text(
-            modifier = Modifier.padding(top = Spacing.small),
-            text = "Опубликована ${toReadableDate(fullVacancy.publishedAt)}",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.secondary
-        )
-        EmployerCard(fullVacancy)
-        VacancyDescription(fullVacancy)
-        Skills(fullVacancy.skills)
-        OpenOnHhButton(
-            url = fullVacancy.vacancyUrl,
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = Spacing.small)
-        )
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(horizontal = Spacing.medium)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Text(
+                text = fullVacancy.name,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MaterialTheme.colorScheme.primary
+            )
+            SalaryInfo(fullVacancy.prettySalary)
+            AdditionalInfo(fullVacancy)
+            Text(
+                modifier = Modifier.padding(top = Spacing.small),
+                text = "Опубликована ${toReadableDate(fullVacancy.publishedAt)}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.secondary
+            )
+            EmployerCard(fullVacancy)
+            VacancyDescription(fullVacancy)
+            Skills(fullVacancy.skills)
+            OpenOnHhButton(
+                url = fullVacancy.vacancyUrl,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = Spacing.small)
+            )
+        }
     }
 }
 
