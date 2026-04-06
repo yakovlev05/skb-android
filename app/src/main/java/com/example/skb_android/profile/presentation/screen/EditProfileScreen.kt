@@ -2,7 +2,9 @@ package com.example.skb_android.profile.presentation.screen
 
 import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,13 +21,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,7 +43,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.skb_android.R
@@ -47,6 +56,7 @@ import com.example.skb_android.ui.theme.Spacing
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.io.File
+import java.time.LocalTime
 
 @Composable
 fun EditProfileScreen() {
@@ -62,6 +72,10 @@ fun EditProfileScreen() {
         onCloseAlertChooseSource = vm::onCloseAlertChooseSource,
         onImageSelected = vm::onImageSelected,
         onClickAvatar = vm::onClickAvatar,
+        onInputTime = vm::onInputTime,
+        onClockClick = vm::onClockClick,
+        onDismissTimePicker = vm::onDismissTimePicker,
+        onConfirmTimePicker = vm::onConfirmTimePicker
     )
 }
 
@@ -75,7 +89,11 @@ private fun EditProfileScreenContent(
     onInputResumeUrl: (String) -> Unit,
     onCloseAlertChooseSource: () -> Unit,
     onImageSelected: (Uri?) -> Unit,
-    onClickAvatar: () -> Unit
+    onClickAvatar: () -> Unit,
+    onInputTime: (String) -> Unit,
+    onClockClick: () -> Unit,
+    onDismissTimePicker: () -> Unit,
+    onConfirmTimePicker: (Int, Int) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -117,7 +135,11 @@ private fun EditProfileScreenContent(
             onCloseAlertChooseSource = onCloseAlertChooseSource,
             onImageSelected = onImageSelected,
             onClickAvatar = onClickAvatar,
-            snackbarHostState = snackbarHostState
+            snackbarHostState = snackbarHostState,
+            onInputTime = onInputTime,
+            onClockClick = onClockClick,
+            onDismissTimePicker = onDismissTimePicker,
+            onConfirmTimePicker = onConfirmTimePicker,
         )
     }
 }
@@ -131,7 +153,11 @@ private fun EditProfileData(
     onCloseAlertChooseSource: () -> Unit,
     onImageSelected: (Uri?) -> Unit,
     onClickAvatar: () -> Unit,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    onInputTime: (String) -> Unit,
+    onClockClick: () -> Unit,
+    onDismissTimePicker: () -> Unit,
+    onConfirmTimePicker: (Int, Int) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -156,6 +182,28 @@ private fun EditProfileData(
         }
     }
 
+    val requestNotificationPermission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (!granted) {
+            scope.launch { snackbarHostState.showSnackbar("Необходим доступ к уведомлениям") }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val isNotificationPermissionGranted =
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+
+            if (!isNotificationPermissionGranted) {
+                requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -176,6 +224,13 @@ private fun EditProfileData(
             onInputResumeUrl = onInputResumeUrl,
         )
 
+        TimePickerField(
+            timeString = editState.timeString,
+            isTimeError = editState.isTimeError,
+            onInputTime = onInputTime,
+            onClockClick = onClockClick
+        )
+
         if (editState.isShowAlertChooseSource) {
             AlertChooseImageSource(
                 onCloseAlertChooseSource = onCloseAlertChooseSource,
@@ -189,6 +244,14 @@ private fun EditProfileData(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                     )
                 }
+            )
+        }
+
+        if (editState.isShowTimePicker) {
+            TimePickerDialog(
+                time = editState.time,
+                onDismissTimePicker = onDismissTimePicker,
+                onConfirmTimePicker = onConfirmTimePicker,
             )
         }
     }
@@ -211,6 +274,39 @@ private fun FullNameTextField(
         singleLine = true,
         label = { Text("ФИО") }
     )
+}
+
+@Composable
+private fun TimePickerField(
+    timeString: String,
+    isTimeError: Boolean,
+    onInputTime: (String) -> Unit,
+    onClockClick: () -> Unit
+) {
+    TextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = timeString,
+        onValueChange = { onInputTime(it) },
+        singleLine = true,
+        label = { Text("Время любимой пары") },
+        isError = isTimeError,
+        trailingIcon = {
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.material_icon_clock),
+                contentDescription = "Clock",
+                modifier = Modifier.clickable { onClockClick() }
+            )
+        }
+    )
+
+    if (isTimeError) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Start,
+            text = "Некорректное время",
+            color = MaterialTheme.colorScheme.error
+        )
+    }
 }
 
 @Composable
@@ -254,6 +350,44 @@ private fun AlertChooseImageSource(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TimePickerDialog(
+    time: LocalTime,
+    onDismissTimePicker: () -> Unit,
+    onConfirmTimePicker: (Int, Int) -> Unit,
+) {
+    val timePickerState = rememberTimePickerState(
+        initialHour = time.hour,
+        initialMinute = time.minute,
+        is24Hour = true
+    )
+
+    AlertDialog(
+        onDismissRequest = onDismissTimePicker,
+        dismissButton = {
+            TextButton(
+                onClick = {}
+            ) {
+                Text("Отмена")
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { onConfirmTimePicker(timePickerState.hour, timePickerState.minute) }
+            ) {
+                Text("ОК")
+            }
+        },
+        text = {
+            TimePicker(
+                state = timePickerState
+            )
+        }
+    )
+
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
@@ -265,6 +399,10 @@ private fun Preview() {
         onInputResumeUrl = {},
         onCloseAlertChooseSource = {},
         onImageSelected = {},
-        onClickAvatar = {}
+        onClickAvatar = {},
+        onInputTime = {},
+        onClockClick = {},
+        onDismissTimePicker = {},
+        onConfirmTimePicker = { _, _ -> }
     )
 }

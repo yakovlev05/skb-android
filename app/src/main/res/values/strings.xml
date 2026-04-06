@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Job Flow</string>
+
+    <string name="notifications_channel_id">my_notifications</string>
+    <string name="notifications_channel_name">Напоминания</string>
 </resources>
