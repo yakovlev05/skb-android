@@ -18,7 +18,8 @@ class ProfileRepository(
         ProfileEntity(
             fullName = it[profileFullName],
             avatarURI = it[avatarURI],
-            resumeURL = it[resumeURL]
+            resumeURL = it[resumeURL],
+            time = it[time]
         )
     }
 
@@ -27,6 +28,7 @@ class ProfileRepository(
             preferences.setOrRemove(profileFullName, profileEntity.fullName)
             preferences.setOrRemove(avatarURI, profileEntity.avatarURI)
             preferences.setOrRemove(resumeURL, profileEntity.resumeURL)
+            preferences.setOrRemove(time, profileEntity.time)
         }
     }
 
@@ -34,5 +36,6 @@ class ProfileRepository(
         val profileFullName = stringPreferencesKey("PROFILE_FULL_NAME")
         val avatarURI = stringPreferencesKey("PROFILE_AVATAR_URI")
         val resumeURL = stringPreferencesKey("PROFILE_RESUME_URL")
+        val time = stringPreferencesKey("PROFILE_TIME")
     }
 }
