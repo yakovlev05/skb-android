@@ -21,3 +21,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "skb-android"
 include(":app")
+include(":uikit")
+include(":core")
+include(":feature:profile")
+include(":navigation")
+include(":feature:vacancy:api")
+include(":feature:vacancy:impl")
