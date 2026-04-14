@@ -19,6 +19,8 @@ kotlinSerialization = "2.2.0"
 chucker = "4.2.0"
 room = "2.8.4"
 ksp = "2.3.6"
+appcompat = "1.7.1"
+material = "1.13.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +52,9 @@ chucker-no-op = { module = "com.github.chuckerteam.chucker:library-no-op", versi
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -57,3 +62,4 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+android-library = { id = "com.android.library", version.ref = "agp" }

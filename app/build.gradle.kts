@@ -72,4 +72,10 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     annotationProcessor(libs.androidx.room.compiler)
     implementation(libs.room.ktx)
+
+    implementation(project(":uikit"))
+    implementation(project(":core"))
+    implementation(project(":navigation"))
+    implementation(project(":feature:profile"))
+    implementation(project(":feature:vacancy:impl"))
 }

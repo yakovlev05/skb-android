@@ -15,19 +15,19 @@ import androidx.compose.ui.res.vectorResource
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.example.skb_android.navigation.EditProfileRoute
-import com.example.skb_android.navigation.MyBackStack
 import com.example.skb_android.navigation.NavBarItems
 import com.example.skb_android.navigation.NavFavoriteRoute
 import com.example.skb_android.navigation.NavHotRoute
 import com.example.skb_android.navigation.NavProfileRoute
 import com.example.skb_android.navigation.NavSearchRoute
 import com.example.skb_android.navigation.VacancyFullRoute
+import com.example.skb_android.navigation.MyBackStack
 import com.example.skb_android.profile.presentation.screen.EditProfileScreen
 import com.example.skb_android.profile.presentation.screen.ProfileScreen
-import com.example.skb_android.vacancy.presentation.screen.VacanciesFavoriteScreen
+import com.example.skb_android.vacancy.impl.presentation.screen.VacanciesFavoriteScreen
 import org.koin.compose.koinInject
-import com.example.skb_android.vacancy.presentation.screen.VacanciesTrendingScreen
-import com.example.skb_android.vacancy.presentation.screen.VacancyFullScreen
+import com.example.skb_android.vacancy.impl.presentation.screen.VacanciesTrendingScreen
+import com.example.skb_android.vacancy.impl.presentation.screen.VacancyFullScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

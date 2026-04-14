@@ -1,7 +1,7 @@
 package com.example.skb_android.di
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.example.skb_android.util.API_HH
+import com.example.skb_android.core.util.API_HH
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
